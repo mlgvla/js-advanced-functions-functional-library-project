@@ -69,7 +69,99 @@ const fi = (function() {
     last: function(collection, stop = false) {
 
         return (stop) ? collection.slice(-1 * stop) : collection[collection.length -1]
+    },
+
+    compact: function(array) {
+        let falseSet = new Set([false, null, 0, "", undefined, NaN])
+        return array.filter(element => !falseSet.has(element))
+    },
+
+    sortBy: function(array, callback) {
+        let newArray = array.slice(0)
+        return newArray.sort(function(a,b){
+            return callback(a) - callback(b)
+        })
+    },
+
+    flatten: function(array, shallow = false) {
+        let flattenedArray = []
+        let flatten = function flatten(arr) {
+            const result = []
+          
+            arr.forEach(function(i) {
+              if (Array.isArray(i)) {
+                result.push(...flatten(i))
+              } else {
+                result.push(i)
+              }
+            })
+          
+            return result
+          }
+
+        if(shallow){
+            return flattenedArray = array.flat()
+        } else {
+           return  flattenedArray = flatten(array)    
+        }
+    },
+
+    uniqSorted: function(array, callback){
+        const sorted = [array[0]]
+        for (let i = 1; i < array.length; i++) {
+            if (sorted[i-1] !== array[i])
+                sorted.push(array[i])
+        }
+      return sorted
+    },
+
+    uniq: function(array, sorted=false, callback=false){
+        if (sorted) {
+            return fi.uniqSorted(array, callback)
+        } else if (!callback){
+            return Array.from(new Set(array))
+        } else {
+            const modifiedVals = new Set()
+            const uniqVals = new Set()
+            for (let val of array) {
+                const moddedVal = callback(val)
+                if (!modifiedVals.has(moddedVal)) {
+                modifiedVals.add(moddedVal)
+                uniqVals.add(val)
+                }
+            }   
+            return Array.from(uniqVals)
+        }
+    },
+
+    keys: function(obj) {
+        const keyArray = []
+        for (const key in obj) {
+           keyArray.push(key)
+        }
+        return keyArray
+    },
+
+    values: function(obj) {
+        const valueArray = []
+        for (const key in obj) {
+            valueArray.push(obj[key])
+        }
+        return valueArray
+    },
+
+    functions: function(obj) {
+        const functionNameArray = []
+        for (const key in obj) {
+            if (typeof obj[key] === "function") {
+                functionNameArray.push(key)
+            }
+        }
+        return functionNameArray.sort()
     }
+    
+
+
 
 
   }
